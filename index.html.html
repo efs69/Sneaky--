@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sneakylinks — Hostels & Gadgets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0a111a;
+      --panel:#0e1722;
+      --card:#0f1824;
+      --muted:#94a3b8;
+      --primary:#0ea5b5; /* teal */
+      --primary-deep:#0f6b8a; /* deep teal-blue */
+      --accent:#22d3a8;  /* neon aqua for actions/whatsapp */
+      --warn:#f59e0b;   /* orange for admin button */
+      --glass: rgba(255,255,255,0.06);
+      --glass-border: rgba(255,255,255,0.12);
+      --radius:14px;
+      --max-width: 1180px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Roboto, Poppins, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;background:linear-gradient(180deg,#0a111a,#0b1320 40%,#08111a);color:#dbeafe}
+
+    /* Header / Nav */
+    .topbar{position:sticky;top:0;z-index:1100;background:linear-gradient(180deg,rgba(10,25,40,0.95),rgba(10,25,40,0.85));padding:12px 18px;display:flex;align-items:center;gap:14px;justify-content:space-between;box-shadow:0 8px 26px rgba(0,0,0,0.45);backdrop-filter:blur(6px)}
+    .brand{display:flex;align-items:center;gap:12px;color:#e2f3ff;text-decoration:none}
+    .logo{width:44px;height:44px;border-radius:12px;background:radial-gradient(120% 120% at 20% 10%, #19d0bd 10%, #1f7fad 60%, #10324b 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;letter-spacing:.5px;box-shadow:0 8px 18px rgba(16,50,75,.45)}
+    .brand h1{margin:0;font-size:18px;font-weight:700}
+    .brand small{display:block;margin-top:2px;color:#b6d2e6}
+
+    .nav-actions{display:flex;align-items:center;gap:12px}
+    .cta{background:var(--accent);color:#001018;padding:10px 14px;border-radius:12px;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(34,211,168,.25)}
+
+    /* Hero */
+    .hero{width:100%;background-image:linear-gradient(180deg,rgba(2,8,18,0.55),rgba(2,8,18,0.35)), url('https://images.unsplash.com/photo-1505691723518-36a5ac3b2d8d?q=80&w=1400&auto=format&fit=crop');background-size:cover;background-position:center;border-radius:0;margin-bottom:18px;position:relative;overflow:hidden}
+    .hero-inner{max-width:var(--max-width);margin:0 auto;padding:56px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .hero-copy{color:#e6f6ff;max-width:640px}
+    .hero-copy h2{font-family:Poppins, sans-serif;font-size:34px;margin:0 0 8px}
+    .hero-copy p{margin:0 0 14px;opacity:0.95}
+    .hero-copy .hero-actions{display:flex;gap:10px}
+    .btn-primary{background:linear-gradient(90deg,#0ea5b5,#1192c4);color:#001018;padding:12px 16px;border-radius:12px;border:none;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(17,146,196,.25)}
+    .btn-outline{background:transparent;color:#e6f6ff;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);font-weight:700;cursor:pointer}
+
+    /* Container */
+    .container{max-width:var(--max-width);margin:20px auto;padding:0 18px}
+
+    /* Controls & search */
+    .controls{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:14px}
+    .tabs{display:flex;gap:8px}
+    .tab{background:rgba(255,255,255,0.04);padding:10px 14px;border-radius:12px;border:1px solid transparent;cursor:pointer;font-weight:700;color:#c7eff0}
+    .tab.active{background:linear-gradient(90deg,#0ea5b5,#0f6b8a);color:#001018;box-shadow:0 8px 24px rgba(11,36,64,0.4)}
+    .search{display:flex;gap:8px;align-items:center}
+    .search input{padding:12px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.12);min-width:240px;background:#0b1420;color:#e6f6ff}
+
+    /* Grid */
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+    .product{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:14px;padding:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:space-between;transition:transform .28s ease,box-shadow .28s ease}
+    .product:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.55)}
+    .product .imgwrap{border-radius:12px;overflow:hidden;background:#0b1420;cursor:pointer;position:relative}
+    .product img{display:block;width:100%;height:200px;object-fit:cover;transition:transform .5s ease}
+    .product:hover img{transform:scale(1.05)}
+    .badge{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);padding:6px 10px;border-radius:999px;font-size:12px;color:#c7eff0;border:1px solid rgba(255,255,255,0.12)}
+    .meta{padding:10px 4px}
+    .meta .title{font-weight:800;color:#e2f3ff}
+    .meta .spec{font-size:13px;color:var(--muted);margin-top:6px}
+    .meta .bottom{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+    .price{font-weight:900;color:#22d3a8}
+    .product .actions{display:flex;gap:8px;margin-top:10px}
+    .btn-secondary{background:transparent;border:1px solid rgba(255,255,255,0.16);padding:8px 10px;border-radius:12px;cursor:pointer;color:#cfefff}
+    .book-btn{background:var(--accent);border:none;color:#001018;padding:9px 12px;border-radius:12px;font-weight:900;cursor:pointer}
+
+    /* Floating Admin FAB */
+    .fab{position:fixed;right:16px;bottom:18px;z-index:1400}
+    .fab-main{background:linear-gradient(135deg,#0ea5b5,#1192c4);color:#001018;border:none;border-radius:999px;width:54px;height:54px;box-shadow:0 12px 30px rgba(17,146,196,.35);cursor:pointer;font-weight:900}
+    .fab-menu{position:absolute;bottom:64px;right:0;display:none;flex-direction:column;gap:10px}
+    .fab-item{border:none;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:800;color:#001018;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+    .fab-item.edit{background:linear-gradient(90deg,#0ea5b5,#0f6b8a)}
+    .fab-item.admin{background:linear-gradient(90deg,#f59e0b,#f7b84a)} /* orange admin */
+    .fab.open .fab-menu{display:flex;}
+
+    /* Modal (booking & gallery share glass style) */
+    .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,10,18,0.65);backdrop-filter:blur(6px);z-index:1200;padding:18px}
+    .modal{width:100%;max-width:820px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.10);padding:16px;box-shadow:0 24px 70px rgba(2,10,18,0.6);color:#e6f6ff;position:relative;overflow:hidden}
+    .modal .close{position:absolute;right:12px;top:10px;font-size:24px;cursor:pointer;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+    .modal .modal-grid{display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:start}
+    .modal .modal-image{width:100%;height:180px;border-radius:10px;object-fit:cover;cursor:pointer;transition:transform .4s ease}
+    .modal .modal-title{font-weight:900;margin:0 0 6px}
+    .modal .modal-price{color:#22d3a8;font-weight:900;margin-bottom:8px}
+    .modal label{font-size:13px;color:#cfe7f3;margin-top:8px;display:block}
+    .modal input, .modal select, .modal textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:#0b1420;color:#e6f6ff;margin-top:6px}
+    .modal .send{background:linear-gradient(90deg,#0ea5b5,#1192c4);border:none;padding:10px;border-radius:12px;color:#001018;font-weight:900;cursor:pointer;margin-top:12px}
+    .modal .send.whatsapp{background:var(--accent)}
+
+    /* Gallery Lightbox */
+    .lightbox{max-width:980px}
+    .lightbox .gallery{display:grid;grid-template-columns:1fr;gap:12px}
+    .lightbox .main-img{width:100%;height:420px;border-radius:12px;object-fit:cover;background:#0b1420}
+    .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .thumbs img{width:100%;height:86px;border-radius:10px;object-fit:cover;cursor:pointer;opacity:.9;border:1px solid rgba(255,255,255,0.08)}
+    .thumbs img.active{outline:2px solid #22d3a8;opacity:1}
+    .lightbox .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center}
+    .lightbox .left{display:flex;gap:10px;align-items:center}
+    .lightbox .right{display:flex;gap:10px;align-items:center}
+    .icon-btn{border:1px solid rgba(255,255,255,0.12);background:rgba(0,0,0,.35);color:#e6f6ff;border-radius:10px;padding:8px 10px;cursor:pointer}
+    .icon-btn.warn{background:linear-gradient(90deg,#f59e0b,#f7b84a);color:#001018;border:none;font-weight:900}
+
+    /* Admin Requests Modal */
+    .admin-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,10,18,0.7);backdrop-filter:blur(6px);z-index:1500;padding:18px}
+    .admin-modal{width:100%;max-width:980px;border-radius:16px;background:linear-gradient(180deg, rgba(6,14,22,.9), rgba(6,12,20,.92));border:1px solid rgba(255,255,255,0.10);padding:16px;box-shadow:0 24px 70px rgba(2,10,18,0.7);color:#e6f6ff;position:relative;overflow:hidden}
+    .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .admin-actions{display:flex;gap:8px}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.16);color:#cfefff;border-radius:10px;padding:8px 10px;cursor:pointer}
+    .admin-table{margin-top:12px;max-height:420px;overflow:auto;border-radius:10px;padding:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06)}
+    table{width:100%;border-collapse:collapse;color:#e6eef8;font-size:14px}
+    th, td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:left}
+
+    /* Add Product panel */
+    .add-form{margin-top:12px;display:grid;gap:10px;background:rgba(255,255,255,0.02);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.06)}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+    /* Footer */
+    footer{padding:30px;text-align:center;color:#8fb0c7}
+
+    /* Responsive */
+    @media (max-width:880px){
+      .hero-inner{flex-direction:column;align-items:flex-start;padding:36px 20px}
+      .grid{grid-template-columns:repeat(2,1fr)}
+      .product img{height:170px}
+      .modal .modal-grid{grid-template-columns:1fr}
+      .lightbox .main-img{height:300px}
+      .thumbs img{height:70px}
+    }
+    @media (max-width:620px){
+      .grid{grid-template-columns:1fr}
+      .nav-actions{display:none}
+      .search input{min-width:140px}
+    }
+  </style>
+</head>
+<body>
+  <!-- Top navigation -->
+  <div class="topbar">
+    <a class="brand" href="#" id="logo">
+      <div class="logo">SL</div>
+      <div>
+        <h1 style="margin:0;font-size:16px">Sneakylinks</h1>
+        <small>Hostels & Gadgets</small>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <button class="cta" onclick="scrollToSection('products')">Explore</button>
+      <button class="cta" onclick="scrollToSection('request')">Request a Product</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <h2>Comfortable stays & trusted gadgets — delivered fast</h2>
+        <p>Browse hand‑picked hostels and quality gadgets. Book instantly via WhatsApp — fast confirmation, safe deals.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="filterTab('hostel')">Browse Hostels</button>
+          <button class="btn-outline" onclick="filterTab('gadget')">Shop Gadgets</button>
+        </div>
+      </div>
+      <div style="min-width:260px;text-align:right">
+        <div style="background:rgba(255,255,255,0.06);padding:12px;border-radius:12px;display:inline-block;color:#e6f6ff">
+          <div style="font-weight:800">WhatsApp Orders</div>
+          <div style="font-size:13px;opacity:.95;margin-top:6px">0597053192 • 0594708232 • 0594438054</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- Controls -->
+    <div class="controls">
+      <div class="tabs" role="tablist" aria-label="Categories">
+        <button class="tab active" data-filter="all" onclick="setTab(this)">All</button>
+        <button class="tab" data-filter="hostel" onclick="setTab(this)">Hostels</button>
+        <button class="tab" data-filter="gadget" onclick="setTab(this)">Gadgets</button>
+      </div>
+      <div class="search">
+        <input type="search" id="searchInput" placeholder="Search (e.g. AC, Laptop, Near campus)" oninput="applyFilters()" />
+        <button class="btn-secondary" onclick="clearSearch()">Clear</button>
+      </div>
+    </div>
+
+    <!-- Product grid -->
+    <section id="products">
+      <div class="grid" id="productGrid">
+        <!-- Products will render here -->
+      </div>
+    </section>
+
+    <!-- Request a Product -->
+    <section id="request" style="max-width:var(--max-width);margin:28px auto;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.06);">
+      <h3 style="margin:0 0 8px;color:#e6f6ff;font-family:Poppins, sans-serif;">Request a Product</h3>
+      <p style="margin:0 0 12px;color:var(--muted)">Can't find what you need? Describe it below and we'll send your request to our WhatsApp team.</p>
+      <form id="requestForm" style="display:grid;gap:10px;">
+        <label style="color:var(--muted);font-size:13px;">Preferred product (describe what you want)</label>
+        <textarea id="reqProduct" rows="3" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:#0b1420;color:#e6eef8" placeholder="e.g. ProX Max Phone 128GB, black, or 2-bedroom hostel near campus"></textarea>
+        <div class="two">
+          <div>
+            <label style="color:var(--muted);font-size:13px;">Your name</label>
+            <input id="reqName" type="text" placeholder="John Doe" />
+          </div>
+          <div>
+            <label style="color:var(--muted);font-size:13px;">Location</label>
+            <input id="reqLocation" type="text" placeholder="City, Area" />
+          </div>
+        </div>
+        <div class="two">
+          <div>
+            <label style="color:var(--muted);font-size:13px;">Telephone number</label>
+            <input id="reqPhone" type="tel" placeholder="059xxxxxxx" />
+          </div>
+          <div>
+            <label style="color:var(--muted);font-size:13px;">Send to WhatsApp</label>
+            <select id="reqWhatsapp">
+              <option value="">Choose number</option>
+              <option value="0597053192">0597053192</option>
+              <option value="0594708232">0594708232</option>
+              <option value="0594438054">0594438054</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button type="button" id="clearReq" class="ghost">Clear</button>
+          <button type="submit" class="cta">Send Request</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- Booking Modal -->
+  <div class="overlay" id="overlay">
+    <div class="modal fade" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="close" id="modalClose" title="Close">&times;</div>
+      <div class="modal-grid">
+        <a id="modalImageLink" href="#" target="_blank" rel="noopener noreferrer"><img id="modalImage" class="modal-image" src="" alt=""></a>
+        <div>
+          <div id="modalTitle" class="modal-title">Product name</div>
+          <div id="modalPrice" class="modal-price">Price</div>
+          <div style="color:#9cc7db;font-size:13px;margin-bottom:8px" id="modalSpecs"></div>
+          <form id="modalForm">
+            <label for="preferredText">Preferred product / request (optional)</label>
+            <textarea id="preferredText" rows="2" placeholder="e.g., want black color, 256GB, or hostel near gate with AC"></textarea>
+            <label for="customerName">Name</label>
+            <input id="customerName" type="text" required />
+            <label for="customerLocation">Location</label>
+            <input id="customerLocation" type="text" required />
+            <label for="customerPhone">Telephone number</label>
+            <input id="customerPhone" type="tel" required />
+            <label for="whatsappNumber">Send booking to</label>
+            <select id="whatsappNumber" required>
+              <option value="">Choose number</option>
+              <option value="0597053192">0597053192</option>
+              <option value="0594708232">0594708232</option>
+              <option value="0594438054">0594438054</option>
+            </select>
+            <button class="send whatsapp" type="submit">Send Booking via WhatsApp</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery Lightbox -->
+  <div class="overlay" id="galleryOverlay">
+    <div class="modal lightbox">
+      <div class="close" id="galleryClose" title="Close">&times;</div>
+      <div class="toolbar" style="margin-bottom:10px">
+        <div class="left">
+          <button class="icon-btn" id="galleryPrev" title="Previous">&#9664;</button>
+          <button class="icon-btn" id="galleryNext" title="Next">&#9654;</button>
+        </div>
+        <div class="right" id="galleryAdminBar" style="display:none">
+          <button class="icon-btn warn" id="quickEdit">Edit</button>
+          <button class="icon-btn" id="replaceMain">Replace Main</button>
+          <button class="icon-btn" id="replaceExtra">Replace Extra</button>
+          <button class="icon-btn" id="editText">Edit Text</button>
+        </div>
+      </div>
+      <div class="gallery">
+        <img id="galleryMain" class="main-img" src="" alt="">
+        <div class="thumbs" id="galleryThumbs"></div>
+      </div>
+      <!-- Hidden file inputs -->
+      <input type="file" id="fileMain" accept="image/*" style="display:none">
+      <input type="file" id="fileExtra" accept="image/*" multiple style="display:none">
+    </div>
+  </div>
+
+  <!-- Admin Requests Modal -->
+  <div class="admin-overlay" id="adminOverlay">
+    <div class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+      <div class="admin-header">
+        <h3 id="adminTitle" style="margin:0;font-family:Poppins, sans-serif">Sneakylinks Admin</h3>
+        <div class="admin-actions">
+          <button id="btnAddProduct" class="ghost">Add Product</button>
+          <button id="exportCsv" class="ghost">Export CSV</button>
+          <button id="clearRequests" class="ghost">Clear Requests</button>
+          <button id="closeAdmin" class="ghost">Close</button>
+        </div>
+      </div>
+      <div class="admin-table">
+        <table>
+          <thead><tr><th>Timestamp</th><th>Product</th><th>Name</th><th>Location</th><th>Phone</th><th>WhatsApp</th></tr></thead>
+          <tbody id="requestsBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Add Product Form -->
+      <div id="addProductPanel" class="add-form" style="display:none;">
+        <h4 style="margin:0">Add New Product</h4>
+        <div class="two">
+          <div><label>Name</label><input id="ap_name" type="text" placeholder="e.g., Cozy Loft A1 or ProX Max 128GB"></div>
+          <div><label>Price</label><input id="ap_price" type="text" placeholder="e.g., GH₵ 1,200/month or GH₵ 3,200"></div>
+        </div>
+        <label>Specs</label>
+        <input id="ap_specs" type="text" placeholder="Short features, e.g., Wi‑Fi • AC • Near campus or 128GB • 5G" />
+        <div class="two">
+          <div>
+            <label>Category</label>
+            <select id="ap_type">
+              <option value="hostel">Hostel</option>
+              <option value="gadget">Gadget</option>
+            </select>
+          </div>
+          <div>
+            <label>Main Image</label>
+            <input id="ap_main" type="file" accept="image/*">
+          </div>
+        </div>
+        <label>Extra Images (0–4)</label>
+        <input id="ap_extra" type="file" accept="image/*" multiple>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button id="ap_cancel" class="ghost">Cancel</button>
+          <button id="ap_save" class="cta">Save Product</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Admin FAB -->
+  <div class="fab" id="fab" style="display:none">
+    <button class="fab-main" id="fabMain">≡</button>
+    <div class="fab-menu">
+      <button class="fab-item edit" id="fabEdit">Edit</button>
+      <button class="fab-item admin" id="fabAdmin">Admin</button>
+    </div>
+  </div>
+
+  <footer>
+    © Sneakylinks — Quick WhatsApp bookings • Designed with ❤️
+  </footer>
+
+  <script>
+    /* ========== Helpers, Storage & State ========== */
+    const WA_NUMBERS = ['0597053192','0594708232','0594438054'];
+    const REQ_KEY = 'sneakylinks_requests_v1';
+    const PROD_KEY = 'sneakylinks_products_v1';
+    const ADMIN_KEY = 'sneakylinks_admin_v1';
+    const PASSWORD = 'sneaky123';
+
+    const productGrid = document.getElementById('productGrid');
+    let activeFilter = 'all';
+    let isAdmin = false;
+    let products = [];
+
+    function scrollToSection(id){ document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'}); }
+    function setTab(btn){
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+      animateGrid();
+    }
+    function filterTab(type){
+      const btn = [...document.querySelectorAll('.tab')].find(b => b.dataset.filter===type) || document.querySelector('.tab[data-filter="all"]');
+      setTab(btn);
+      if(type!=='all'){ document.getElementById('products').scrollIntoView({behavior:'smooth'}); }
+    }
+    function applyFilters(){
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      document.querySelectorAll('.product').forEach(card=>{
+        const type = card.dataset.type;
+        const name = (card.dataset.name || '').toLowerCase();
+        const price = (card.dataset.price || '').toLowerCase();
+        const specs = (card.querySelector('.spec')?.innerText||'').toLowerCase();
+        let show = true;
+        if(activeFilter !== 'all' && type !== activeFilter) show = false;
+        if(q){ if(!(name.includes(q) || specs.includes(q) || price.includes(q))) show = false; }
+        card.style.display = show ? 'flex' : 'none';
+      });
+    }
+    function clearSearch(){ document.getElementById('searchInput').value=''; applyFilters(); }
+    function animateGrid(){ productGrid.style.opacity = '0.6'; setTimeout(()=>{ productGrid.style.opacity='1'; }, 180); }
+
+    function saveProducts(){ localStorage.setItem(PROD_KEY, JSON.stringify(products)); }
+    function loadProducts(){
+      try{ const s = localStorage.getItem(PROD_KEY); if(s){ products = JSON.parse(s); return; } }catch(e){}
+      // default 20 mixed placeholders
+      products = getDefaultProducts();
+      saveProducts();
+    }
+
+    function getDefaultProducts(){
+      const ph = (t,i)=> (t==='hostel'
+        ? `https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop`
+        : `https://images.unsplash.com/photo-1517059224940-d4af9eec41e5?q=80&w=1200&auto=format&fit=crop`);
+      const extra = [
+        'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1493666438817-866a91353ca9?q=80&w=1200&auto=format&fit=crop'
+      ];
+      const hostelData = [
+        {name:'Cozy Loft A1', price:'GH₵ 1,200/month', specs:'Wi‑Fi • AC • Near campus'},
+        {name:'Garden View B2', price:'GH₵ 950/month', specs:'Studio • Furnished • Security'},
+        {name:'City Square C3', price:'GH₵ 1,500/month', specs:'2‑Bedroom • Balcony • Parking'},
+        {name:'Riverside D4', price:'GH₵ 800/month', specs:'Single • Free Water • Quiet'},
+        {name:'Sunset Villa E5', price:'GH₵ 1,400/month', specs:'2‑Bedroom • Wi‑Fi • AC'},
+        {name:'Campus Gate F6', price:'GH₵ 900/month', specs:'1‑Bedroom • Near Bus Stop'},
+        {name:'Skyline G7', price:'GH₵ 1,300/month', specs:'2‑Bedroom • Large Kitchen'},
+        {name:'Harbor H8', price:'GH₵ 600/month', specs:'Shared • Wi‑Fi • Laundry'},
+        {name:'Metro I9', price:'GH₵ 1,500/month', specs:'Furnished • Balcony • AC'},
+        {name:'Market Close J10', price:'GH₵ 950/month', specs:'Studio • Near Shops'},
+      ];
+      const gadgetData = [
+        {name:'ProX Max 128GB', price:'GH₵ 3,200', specs:'Smartphone • 128GB • 5G'},
+        {name:'NovaBook 16', price:'GH₵ 5,500', specs:'Laptop • 16GB RAM • 512GB SSD'},
+        {name:'Tabo 10', price:'GH₵ 2,100', specs:'Tablet • 10‑inch • 64GB'},
+        {name:'Pulse Watch', price:'GH₵ 1,000', specs:'Smartwatch • Waterproof'},
+        {name:'AirBeats', price:'GH₵ 550', specs:'Wireless Earbuds • Noise Cancel'},
+        {name:'Lumix24K', price:'GH₵ 4,200', specs:'Camera • 24MP • 4K Video'},
+        {name:'BoomBox S', price:'GH₵ 700', specs:'Speaker • Bass Boost'},
+        {name:'GameCube X', price:'GH₵ 3,800', specs:'Console • 1TB'},
+        {name:'SkyDrone Lite', price:'GH₵ 2,900', specs:'Drone • 1080p Camera'},
+        {name:'InkJet Pro', price:'GH₵ 1,200', specs:'Printer • Wireless • Color'},
+      ];
+      // alternate hostel/gadget
+      const out = [];
+      for(let i=0;i<10;i++){
+        const h = hostelData[i];
+        out.push({id: 'h'+(i+1), type:'hostel', name:h.name, price:h.price, specs:h.specs, images:[ph('hostel',i), ...extra]});
+        const g = gadgetData[i];
+        out.push({id: 'g'+(i+1), type:'gadget', name:g.name, price:g.price, specs:g.specs, images:[ph('gadget',i), ...extra]});
+      }
+      return out;
+    }
+
+    /* ========== Rendering ========== */
+    function renderProducts(){
+      productGrid.innerHTML = '';
+      products.forEach(p => productGrid.appendChild(productCard(p)));
+      applyFilters();
+    }
+    function productCard(p){
+      const card = document.createElement('div');
+      card.className = 'product';
+      card.dataset.type = p.type;
+      card.dataset.name = p.name;
+      card.dataset.price = p.price;
+      card.dataset.id = p.id;
+      const img0 = (p.images && p.images[0]) || '';
+      card.innerHTML = `
+        <div class="imgwrap" onclick="openGallery('${p.id}')">
+          <span class="badge">${p.type==='hostel' ? 'Hostel' : 'Gadget'}</span>
+          <img src="${img0}" alt="${escapeHtml(p.name)}">
+        </div>
+        <div class="meta">
+          <div class="title">${escapeHtml(p.name)}</div>
+          <div class="spec">${escapeHtml(p.specs||'')}</div>
+          <div class="bottom">
+            <div class="price">${escapeHtml(p.price||'')}</div>
+            <div class="actions">
+              <button class="btn-secondary" onclick="viewDetails(event,this)">View</button>
+              <button class="book-btn" onclick="bookNow(event,this)">Book Now</button>
+            </div>
+          </div>
+        </div>`;
+      return card;
+    }
+
+    /* ========== Booking Modal ========== */
+    const overlay = document.getElementById('overlay');
+    const modalImage = document.getElementById('modalImage');
+    const modalImageLink = document.getElementById('modalImageLink');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalSpecs = document.getElementById('modalSpecs');
+    const modalClose = document.getElementById('modalClose');
+    const modalForm = document.getElementById('modalForm');
+
+    function bookNow(e,el){ e.stopPropagation(); const card = el.closest('.product'); openModalFromCard(card); }
+    function viewDetails(e,el){ e.stopPropagation(); const card = el.closest('.product'); openModalFromCard(card); }
+    function openModalFromCard(card){
+      const id = card.dataset.id;
+      const p = products.find(x=>x.id===id);
+      const img = (p.images && p.images[0]) || card.querySelector('img')?.src || '';
+      modalImage.src = img; modalImage.alt = p.name; modalImageLink.href = img;
+      modalTitle.textContent = p.name; modalPrice.textContent = p.price; modalSpecs.textContent = p.specs || '';
+      overlay.style.display = 'flex';
+      setTimeout(()=>{ document.getElementById('customerName').focus(); }, 220);
+    }
+    function closeModal(){ overlay.style.display = 'none'; }
+    modalClose.addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeModal(); });
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    modalForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const name = document.getElementById('customerName').value.trim();
+      const location = document.getElementById('customerLocation').value.trim();
+      const phone = document.getElementById('customerPhone').value.trim();
+      const preferred = document.getElementById('preferredText').value.trim();
+      const whatsapp = document.getElementById('whatsappNumber').value;
+      const product = modalTitle.textContent;
+      const price = modalPrice.textContent;
+      if(!whatsapp){ alert('Please choose a WhatsApp number to send the booking to.'); return; }
+      const message = `Booking Details:%0AProduct: ${encodeURIComponent(product)}%0APrice: ${encodeURIComponent(price)}%0ASpecs/Request: ${encodeURIComponent(preferred)}%0AName: ${encodeURIComponent(name)}%0ALocation: ${encodeURIComponent(location)}%0ATelephone: ${encodeURIComponent(phone)}`;
+      const wa = '233' + whatsapp.slice(1);
+      // store request
+      try{ _sneaky_addRequest({t:Date.now(), product: product + (preferred? ' | '+preferred:''), name, location, phone, whatsapp}); }catch(e){}
+      window.open(`https://wa.me/${wa}?text=${message}`, '_blank');
+    });
+
+    /* ========== Request a Product form ========== */
+    (function(){
+      const form = document.getElementById('requestForm');
+      const textarea = document.getElementById('reqProduct');
+      const name = document.getElementById('reqName');
+      const location = document.getElementById('reqLocation');
+      const phone = document.getElementById('reqPhone');
+      const whatsapp = document.getElementById('reqWhatsapp');
+      const clearBtn = document.getElementById('clearReq');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const prod = textarea.value.trim();
+        const n = name.value.trim();
+        const loc = location.value.trim();
+        const ph = phone.value.trim();
+        const wa = whatsapp.value;
+        if(!prod){ alert('Please describe the product you want.'); textarea.focus(); return; }
+        if(!n){ alert('Please enter your name.'); name.focus(); return; }
+        if(!ph){ alert('Please enter your phone number.'); phone.focus(); return; }
+        if(!wa){ alert('Please choose a WhatsApp number to send the request to.'); whatsapp.focus(); return; }
+        const message = `Product Request:%0APreferred: ${encodeURIComponent(prod)}%0AName: ${encodeURIComponent(n)}%0ALocation: ${encodeURIComponent(loc)}%0APhone: ${encodeURIComponent(ph)}`;
+        const waNumber = '233' + wa.slice(1);
+        try{ _sneaky_addRequest({t:Date.now(), product: '[REQUEST] '+prod, name:n, location:loc, phone:ph, whatsapp:wa}); }catch(e){}
+        window.open(`https://wa.me/${waNumber}?text=${message}`, '_blank');
+      });
+      clearBtn.addEventListener('click', function(){ textarea.value=''; name.value=''; location.value=''; phone.value=''; whatsapp.value=''; });
+    })();
+
+    /* ========== Requests storage (Admin) ========== */
+    function loadRequests(){ try{ return JSON.parse(localStorage.getItem(REQ_KEY)||'[]'); }catch(e){ return []; } }
+    function saveRequests(arr){ localStorage.setItem(REQ_KEY, JSON.stringify(arr)); }
+    function _sneaky_addRequest(obj){ const arr = loadRequests(); arr.unshift(obj); saveRequests(arr); }
+    window._sneaky_openAdmin = function(){ openAdmin(); }
+
+    const adminOverlay = document.getElementById('adminOverlay');
+    const requestsBody = document.getElementById('requestsBody');
+    const exportBtn = document.getElementById('exportCsv');
+    const clearBtn = document.getElementById('clearRequests');
+    const closeAdminBtn = document.getElementById('closeAdmin');
+    const addPanel = document.getElementById('addProductPanel');
+    const btnAddProduct = document.getElementById('btnAddProduct');
+
+    function renderRequests(){
+      const arr = loadRequests();
+      requestsBody.innerHTML = '';
+      if(arr.length===0){ requestsBody.innerHTML = '<tr><td colspan="6" style="padding:12px;color:var(--muted)">No requests yet.</td></tr>'; return; }
+      arr.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${new Date(r.t).toLocaleString()}</td>
+                        <td>${escapeHtml(r.product||'')}</td>
+                        <td>${escapeHtml(r.name||'')}</td>
+                        <td>${escapeHtml(r.location||'')}</td>
+                        <td>${escapeHtml(r.phone||'')}</td>
+                        <td>${escapeHtml(r.whatsapp||'')}</td>`;
+        requestsBody.appendChild(tr);
+      });
+    }
+    function exportCSV(){
+      const arr = loadRequests();
+      if(arr.length===0){ alert('No requests to export'); return; }
+      const header = ['timestamp','product','name','location','phone','whatsapp'];
+      const rows = arr.map(r=>[new Date(r.t).toISOString(), csvEscape(r.product), csvEscape(r.name), csvEscape(r.location), csvEscape(r.phone), r.whatsapp]);
+      let csv = header.join(',') + '\n' + rows.map(r=>r.join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'sneakylinks_requests.csv'; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+    function openAdmin(){ renderRequests(); adminOverlay.style.display='flex'; }
+    function closeAdmin(){ adminOverlay.style.display='none'; }
+    exportBtn.addEventListener('click', exportCSV);
+    clearBtn.addEventListener('click', ()=>{ if(confirm('Clear all stored requests?')){ saveRequests([]); renderRequests(); } });
+    closeAdminBtn.addEventListener('click', closeAdmin);
+    adminOverlay.addEventListener('click', (e)=>{ if(e.target===adminOverlay) closeAdmin(); });
+    btnAddProduct.addEventListener('click', ()=>{ addPanel.style.display = addPanel.style.display==='none' ? 'block' : 'none'; });
+
+    function csvEscape(s){ if(s==null) return '""'; return '"' + String(s).replace(/"/g,'""') + '"'; }
+    function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+    /* ========== Add Product (Admin) ========== */
+    const ap_name = document.getElementById('ap_name');
+    const ap_price = document.getElementById('ap_price');
+    const ap_specs = document.getElementById('ap_specs');
+    const ap_type = document.getElementById('ap_type');
+    const ap_main = document.getElementById('ap_main');
+    const ap_extra = document.getElementById('ap_extra');
+    const ap_cancel = document.getElementById('ap_cancel');
+    const ap_save = document.getElementById('ap_save');
+
+    ap_cancel.addEventListener('click', ()=>{
+      addPanel.style.display='none';
+      ap_name.value=''; ap_price.value=''; ap_specs.value=''; ap_type.value='hostel'; ap_main.value=''; ap_extra.value='';
+    });
+
+    ap_save.addEventListener('click', async ()=>{
+      const name = ap_name.value.trim();
+      const price = ap_price.value.trim();
+      const specs = ap_specs.value.trim();
+      const type = ap_type.value;
+      if(!name || !price){ alert('Name and price are required.'); return; }
+      const images = [];
+      // main image
+      if(ap_main.files && ap_main.files[0]){
+        const m = await fileToDataURL(ap_main.files[0]); images.push(m);
+      }else{
+        images.push('https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop');
+      }
+      // extras
+      if(ap_extra.files && ap_extra.files.length){
+        const count = Math.min(4, ap_extra.files.length);
+        for(let i=0;i<count;i++){ images.push(await fileToDataURL(ap_extra.files[i])); }
+      }
+      const id = type[0] + (Math.random().toString(36).slice(2,8));
+      products.unshift({id, type, name, price, specs, images});
+      saveProducts(); renderProducts(); addPanel.style.display='none';
+      ap_name.value=''; ap_price.value=''; ap_specs.value=''; ap_type.value='hostel'; ap_main.value=''; ap_extra.value='';
+      alert('Product added.');
+    });
+
+    function fileToDataURL(file){
+      return new Promise((resolve,reject)=>{
+        const reader = new FileReader();
+        reader.onload = ()=> resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    /* ========== Gallery Lightbox with Quick Edit ========== */
+    const galleryOverlay = document.getElementById('galleryOverlay');
+    const galleryClose = document.getElementById('galleryClose');
+    const galleryMain = document.getElementById('galleryMain');
+    const galleryThumbs = document.getElementById('galleryThumbs');
+    const galleryPrev = document.getElementById('galleryPrev');
+    const galleryNext = document.getElementById('galleryNext');
+    const galleryAdminBar = document.getElementById('galleryAdminBar');
+    const quickEditBtn = document.getElementById('quickEdit');
+    const replaceMainBtn = document.getElementById('replaceMain');
+    const replaceExtraBtn = document.getElementById('replaceExtra');
+    const editTextBtn = document.getElementById('editText');
+    const fileMain = document.getElementById('fileMain');
+    const fileExtra = document.getElementById('fileExtra');
+
+    let galleryIndex = 0;
+    let galleryProductId = null;
+
+    function openGallery(id){
+      const p = products.find(x=>x.id===id); if(!p) return;
+      galleryProductId = id;
+      const imgs = p.images || [];
+      galleryIndex = 0;
+      galleryMain.src = imgs[0] || '';
+      renderThumbs(imgs);
+      galleryOverlay.style.display = 'flex';
+      galleryAdminBar.style.display = isAdmin ? 'flex' : 'none';
+    }
+    function renderThumbs(imgs){
+      galleryThumbs.innerHTML = '';
+      const arr = imgs.slice(0,5); // main + up to 4 extras
+      arr.forEach((u,idx)=>{
+        const im = document.createElement('img'); im.src = u; im.alt = 'thumb'+idx;
+        if(idx===galleryIndex) im.classList.add('active');
+        im.addEventListener('click', ()=>{ galleryIndex = idx; galleryMain.src = arr[galleryIndex]; updateActiveThumb(); });
+        galleryThumbs.appendChild(im);
+      });
+    }
+    function updateActiveThumb(){
+      [...galleryThumbs.querySelectorAll('img')].forEach((im,i)=>{
+        im.classList.toggle('active', i===galleryIndex);
+      });
+    }
+    function closeGallery(){ galleryOverlay.style.display = 'none'; }
+
+    galleryClose.addEventListener('click', closeGallery);
+    galleryOverlay.addEventListener('click', (e)=>{ if(e.target===galleryOverlay) closeGallery(); });
+    galleryPrev.addEventListener('click', ()=>{
+      const p = products.find(x=>x.id===galleryProductId); if(!p) return;
+      const len = Math.min(5, (p.images||[]).length);
+      galleryIndex = (galleryIndex - 1 + len) % len;
+      galleryMain.src = p.images[galleryIndex]; updateActiveThumb();
+    });
+    galleryNext.addEventListener('click', ()=>{
+      const p = products.find(x=>x.id===galleryProductId); if(!p) return;
+      const len = Math.min(5, (p.images||[]).length);
+      galleryIndex = (galleryIndex + 1) % len;
+      galleryMain.src = p.images[galleryIndex]; updateActiveThumb();
+    });
+
+    // Quick Edit
+    quickEditBtn.addEventListener('click', ()=>{
+      const p = products.find(x=>x.id===galleryProductId); if(!p) return;
+      const name = prompt('Edit Name', p.name); if(name==null) return;
+      const price = prompt('Edit Price', p.price); if(price==null) return;
+      const specs = prompt('Edit Specs', p.specs||''); if(specs==null) return;
+      p.name = name.trim(); p.price = price.trim(); p.specs = specs.trim();
+      saveProducts(); renderProducts();
+      // update current modal titles if open
+      if(document.getElementById('modalTitle').textContent===p.name){ document.getElementById('modalPrice').textContent=p.price; document.getElementById('modalSpecs').textContent=p.specs; }
+      alert('Updated.');
+    });
+
+    // Replace main image
+    replaceMainBtn.addEventListener('click', ()=>{
+      if(!isAdmin){ return; }
+      fileMain.click();
+    });
+    fileMain.addEventListener('change', async ()=>{
+      const p = products.find(x=>x.id===galleryProductId); if(!p || !fileMain.files[0]) return;
+      const data = await fileToDataURL(fileMain.files[0]);
+      p.images = p.images || [];
+      p.images[0] = data;
+      saveProducts(); renderProducts();
+      openGallery(p.id); // re-open to refresh
+      fileMain.value='';
+    });
+
+    // Replace extra images (one or many)
+    replaceExtraBtn.addEventListener('click', ()=>{
+      if(!isAdmin){ return; }
+      fileExtra.click();
+    });
+    fileExtra.addEventListener('change', async ()=>{
+      const p = products.find(x=>x.id===galleryProductId); if(!p) return;
+      const arr = p.images || []; while(arr.length<1) arr.push('');
+      const maxExtras = 4;
+      const files = [...fileExtra.files].slice(0,maxExtras);
+      for(let i=0;i<files.length;i++){
+        const data = await fileToDataURL(files[i]);
+        arr[1+i] = data;
+      }
+      p.images = arr.slice(0, 1 + maxExtras);
+      saveProducts(); renderProducts();
+      openGallery(p.id);
+      fileExtra.value='';
+    });
+
+    editTextBtn.addEventListener('click', ()=>{
+      if(!isAdmin) return;
+      const p = products.find(x=>x.id===galleryProductId); if(!p) return;
+      const specs = prompt('Edit Specs', p.specs||''); if(specs==null) return;
+      p.specs = specs.trim();
+      saveProducts(); renderProducts();
+      alert('Specs updated.');
+    });
+
+    /* ========== Admin Login & FAB ========== */
+    const fab = document.getElementById('fab');
+    const fabMain = document.getElementById('fabMain');
+    const fabEdit = document.getElementById('fabEdit');
+    const fabAdmin = document.getElementById('fabAdmin');
+    const logo = document.getElementById('logo');
+    let tapCount = 0; let tapTimer = null;
+
+    function updateAdminUI(){
+      fab.style.display = isAdmin ? 'block' : 'none';
+      galleryAdminBar.style.display = isAdmin ? 'flex' : 'none';
+    }
+    function promptLogin(){
+      const pwd = prompt('Enter admin password'); if(pwd===PASSWORD){ isAdmin=true; localStorage.setItem(ADMIN_KEY,'1'); updateAdminUI(); alert('Admin unlocked'); } else { alert('Incorrect password'); }
+    }
+    function logoutAdmin(){ isAdmin=false; localStorage.removeItem(ADMIN_KEY); updateAdminUI(); alert('Admin locked'); }
+
+    // Unlock via "L" key or 5 taps on logo
+    window.addEventListener('keydown', (e)=>{ if(e.key==='l' || e.key==='L'){ if(isAdmin){ if(confirm('Lock admin?')) logoutAdmin(); } else { promptLogin(); } } });
+    logo.addEventListener('click', ()=>{
+      tapCount++; clearTimeout(tapTimer);
+      tapTimer = setTimeout(()=>{ tapCount=0; }, 1000);
+      if(tapCount>=5){ tapCount=0; if(isAdmin){ if(confirm('Lock admin?')) logoutAdmin(); } else { promptLogin(); } }
+    });
+
+    fabMain.addEventListener('click', ()=>{ fab.classList.toggle('open'); });
+    fabEdit.addEventListener('click', ()=>{
+      alert('Tip: Tap a product image to open the gallery, then use Edit / Replace buttons. Or use Admin → Add Product.');
+    });
+    fabAdmin.addEventListener('click', ()=>{ openAdmin(); });
+
+    /* ========== Init ========== */
+    (function init(){
+      isAdmin = localStorage.getItem(ADMIN_KEY)==='1';
+      loadProducts();
+      renderProducts();
+      updateAdminUI();
+    })();
+  </script>
+</body>
+</html>
